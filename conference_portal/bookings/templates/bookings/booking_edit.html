@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Редактирование заявки{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-warning">
+                <h4 class="mb-0"><i class="bi bi-pencil"></i> Редактирование заявки</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-check-circle"></i> Сохранить
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

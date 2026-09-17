@@ -1,42 +1,133 @@
+:root {
+    --brand-dark: #2c3e50;
+    --brand-accent: #ff8c42;
+}
+
 body {
     background-color: #f5f5f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1 0 auto;
+}
+
+footer {
+    flex-shrink: 0;
 }
 
 .card {
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    border: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.10);
 }
 
 .card-header {
     border-radius: 10px 10px 0 0 !important;
+    font-weight: 600;
 }
 
 .navbar-brand {
     font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .alert {
     border-radius: 10px;
+    border: none;
 }
 
 .btn {
-    border-radius: 5px;
+    border-radius: 6px;
+    transition: transform 0.1s ease;
 }
 
-table {
-    background-color: white;
-    border-radius: 10px;
-    overflow: hidden;
+.btn:active {
+    transform: scale(0.97);
 }
 
 .form-control, .form-select {
-    border-radius: 5px;
+    border-radius: 6px;
 }
 
 .badge {
     padding: 5px 10px;
+    font-weight: 500;
 }
 
-.mt-4 {
-    margin-top: 2rem !important;
+/* Иконки чуть крупнее и с отступом */
+.bi {
+    vertical-align: -1px;
+}
+
+/* Таблица адаптивная */
+.table-responsive {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+table {
+    background-color: white;
+    margin-bottom: 0;
+}
+
+/* Карточки заявок/отзывов — одинаковая высота */
+.card.h-100 {
+    display: flex;
+    flex-direction: column;
+}
+
+.card.h-100 .card-body {
+    flex: 1 1 auto;
+}
+
+/* --- Мобильная адаптация --- */
+@media (max-width: 576px) {
+    h2 {
+        font-size: 1.4rem;
+    }
+
+    .card-header h4 {
+        font-size: 1.1rem;
+    }
+
+    .navbar-brand {
+        font-size: 1rem;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .btn-sm {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.5rem;
+    }
+
+    .card-footer {
+        padding: 0.5rem;
+    }
+
+    .card-footer .btn {
+        flex: 1 1 auto;
+    }
+
+    footer {
+        padding: 1rem 0;
+        font-size: 0.85rem;
+    }
+}
+
+/* Планшет */
+@media (min-width: 577px) and (max-width: 991px) {
+    h2 {
+        font-size: 1.6rem;
+    }
 }

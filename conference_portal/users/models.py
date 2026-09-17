@@ -14,6 +14,7 @@ def validate_cyrillic(value):
     if not all(c.isalpha() or c.isspace() for c in value):
         raise ValidationError('ФИО должно содержать только символы кириллицы и пробелы')
 
+
 class CustomUser(AbstractUser):
     username = models.CharField(
         max_length=150,
@@ -21,25 +22,22 @@ class CustomUser(AbstractUser):
         verbose_name='Логин',
         help_text='Только латиница и цифры, не менее 6 символов'
     )
-    password = models.CharField(
-        max_length=128,
-        verbose_name='Пароль'
-    )
+    password = models.CharField(max_length=128, verbose_name='Пароль')
     full_name = models.CharField(
         max_length=255,
         verbose_name='ФИО',
-        validators=[validate_cyrillic]
+        validators=[validate_cyrillic],
+        blank=True,
     )
     phone = models.CharField(
         max_length=20,
         verbose_name='Телефон',
-        validators=[validate_phone]
+        validators=[validate_phone],
+        blank=True,
     )
-    email = models.EmailField(
-        max_length=254,
-        verbose_name='Электронная почта'
-    )
+    email = models.EmailField(max_length=254, verbose_name='Электронная почта')
     is_admin = models.BooleanField(default=False, verbose_name='Администратор')
+    is_moderator = models.BooleanField(default=False, verbose_name='Модератор')
 
     groups = models.ManyToManyField(
         'auth.Group',
@@ -49,7 +47,7 @@ class CustomUser(AbstractUser):
         help_text='The groups this user belongs to.'
     )
     user_permissions = models.ManyToManyField(
-        'auth.permission',
+        'auth.Permission',
         related_name='customuser_set',
         blank=True,
         verbose_name='user permissions',
@@ -59,6 +57,10 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.username
 
+    @property
+    def is_moderator_or_admin(self):
+        return self.is_admin or self.is_moderator or self.is_superuser
+
     class Meta:
         verbose_name = 'Пользователь'
-        verbose_name_plural='Пользователи'
+        verbose_name_plural = 'Пользователи'

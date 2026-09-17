@@ -4,33 +4,38 @@
 
 {% block content %}
 <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-        <div class="card">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
             <div class="card-header bg-success text-white">
-                <h4 class="mb-0">Новая заявка на бронирование</h4>
+                <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Новая заявка</h4>
             </div>
             <div class="card-body">
                 <form method="post">
                     {% csrf_token %}
                     <div class="mb-3">
-                        <label for="id_room_name" class="form-label">Название помещения</label>
+                        <label for="id_room_name" class="form-label"><i class="bi bi-door-open"></i> Название помещения</label>
                         <input type="text" name="room_name" id="id_room_name" class="form-control"
-                               placeholder="Например: Аудитория 101, Коворкинг Центр, Кинозал" required>
-                        <div class="form-text">Введите название помещения для проведения конференции</div>
+                               placeholder="Например: Аудитория 101" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id_conference_date" class="form-label">Дата и время начала конференции</label>
+                        <label for="id_conference_date" class="form-label"><i class="bi bi-calendar-event"></i> Дата и время начала</label>
                         <input type="datetime-local" name="conference_date" id="id_conference_date" class="form-control" required>
                     </div>
                     <div class="mb-3">
-                        <label for="id_payment_method" class="form-label">Способ оплаты</label>
+                        <label for="id_payment_method" class="form-label"><i class="bi bi-credit-card"></i> Способ оплаты</label>
                         <select name="payment_method" id="id_payment_method" class="form-select" required>
                             <option value="">Выберите способ оплаты</option>
                             <option value="offline">Очное посещение</option>
                             <option value="sbp">Перевод по системе СБП</option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Отправить заявку</button>
+                    <div class="mb-3">
+                        <label for="id_description" class="form-label"><i class="bi bi-card-text"></i> Описание</label>
+                        <textarea name="description" id="id_description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-send"></i> Отправить заявку
+                    </button>
                 </form>
             </div>
         </div>

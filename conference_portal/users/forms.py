@@ -20,18 +20,14 @@ class CustomUserCreationForm(UserCreationForm):
         label='Подтверждение пароля',
         widget=forms.PasswordInput
     )
-    full_name = forms.CharField(
-        label='ФИО',
-        max_length=255
-    )
+    full_name = forms.CharField(label='ФИО', max_length=255, required=False)
     phone = forms.CharField(
         label='Телефон',
         max_length=20,
-        help_text='Формат: 8(XXX)XXX-XX-XX'
+        help_text='Формат: 8(XXX)XXX-XX-XX',
+        required=False,
     )
-    email = forms.EmailField(
-        label='Электронная почта'
-    )
+    email = forms.EmailField(label='Электронная почта')
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
@@ -43,13 +39,13 @@ class CustomUserCreationForm(UserCreationForm):
 
     def clean_full_name(self):
         full_name = self.cleaned_data.get('full_name')
-        if not all(c.isalpha() or c.isspace() for c in full_name):
+        if full_name and not all(c.isalpha() or c.isspace() for c in full_name):
             raise ValidationError('ФИО должно содержать только символы кириллицы и пробелы')
         return full_name
 
     def clean_phone(self):
         phone = self.cleaned_data.get('phone')
-        if not re.match(r'^8\(\d{3}\)\d{3}-\d{2}-\d{2}$', phone):
+        if phone and not re.match(r'^8\(\d{3}\)\d{3}-\d{2}-\d{2}$', phone):
             raise ValidationError('Телефон должен быть в формате 8(XXX)XXX-XX-XX')
         return phone
 

@@ -3,46 +3,98 @@
 {% block title %}Мои заявки - Конференции.РФ{% endblock %}
 
 {% block content %}
-<h2>Мои заявки</h2>
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h2 class="mb-0"><i class="bi bi-list-check"></i> Мои заявки</h2>
+    <div class="d-flex gap-2 align-items-center">
+        {% if avg_rating %}
+            <span class="badge bg-success fs-6">
+                <i class="bi bi-star-fill"></i> Средний рейтинг: {{ avg_rating|floatformat:1 }}/5
+            </span>
+        {% endif %}
+        <a href="{% url 'bookings:booking_form' %}" class="btn btn-success btn-sm">
+            <i class="bi bi-plus-circle"></i> Новая заявка
+        </a>
+    </div>
+</div>
+
 {% if bookings %}
-    <div class="row mt-4">
+    <div class="row g-3">
         {% for booking in bookings %}
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <strong>{{ booking.room_name }}</strong>
-                        <span class="badge bg-{% if booking.status == 'new' %}warning{% elif booking.status == 'scheduled' %}success{% else %}secondary{% endif %} float-end">
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <strong class="text-truncate"><i class="bi bi-door-open"></i> {{ booking.room_name }}</strong>
+                        <span class="badge bg-{% if booking.status == 'new' %}warning text-dark{% elif booking.status == 'scheduled' %}success{% else %}secondary{% endif %}">
+                            {% if booking.status == 'new' %}<i class="bi bi-hourglass"></i>
+                            {% elif booking.status == 'scheduled' %}<i class="bi bi-calendar-check"></i>
+                            {% else %}<i class="bi bi-check2-all"></i>{% endif %}
                             {{ booking.get_status_display }}
                         </span>
                     </div>
                     <div class="card-body">
-                        <p><strong>Дата:</strong> {{ booking.conference_date|date:"d.m.Y H:i" }}</p>
-                        <p><strong>Способ оплаты:</strong> {{ booking.get_payment_method_display }}</p>
-                        <p><strong>Создана:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}</p>
-                        {% if booking.review %}
-                            <div class="alert alert-info mt-2">
-                                <strong>Ваш отзыв:</strong>
-                                <p class="mb-0">{{ booking.review }}</p>
+                        <p class="mb-1"><i class="bi bi-calendar-event"></i> <strong>Дата:</strong> {{ booking.conference_date|date:"d.m.Y H:i" }}</p>
+                        <p class="mb-1"><i class="bi bi-credit-card"></i> <strong>Оплата:</strong> {{ booking.get_payment_method_display }}</p>
+                        <p class="mb-1"><i class="bi bi-clock-history"></i> <strong>Создана:</strong> {{ booking.created_at|date:"d.m.Y H:i" }}</p>
+                        {% if booking.review_obj %}
+                            <div class="alert alert-info mt-2 mb-0 py-2">
+                                <strong><i class="bi bi-chat-quote"></i> Ваш отзыв:</strong>
+                                <p class="mb-0 small">{{ booking.review_obj.text|truncatechars:100 }}</p>
+                                <span class="badge bg-secondary">
+                                    <i class="bi bi-star-fill"></i> {{ booking.review_obj.rating }}/5
+                                </span>
                             </div>
                         {% endif %}
-                        {% if booking.status == 'completed' and not booking.review %}
-                            <form method="post" class="mt-3">
-                                {% csrf_token %}
-                                <input type="hidden" name="review_id" value="{{ booking.id }}">
-                                <div class="mb-2">
-                                    <textarea name="review" class="form-control" rows="2" placeholder="Оставьте отзыв о мероприятии"></textarea>
-                                </div>
-                                <button type="submit" class="btn btn-sm btn-outline-primary">Добавить отзыв</button>
-                            </form>
+                    </div>
+                    <div class="card-footer d-flex flex-wrap gap-1">
+                        <a href="{% url 'bookings:booking_detail' booking.pk %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-eye"></i> Подробнее
+                        </a>
+                        {% if booking.can_be_edited %}
+                            <a href="{% url 'bookings:booking_edit' booking.pk %}" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-pencil"></i> Ред.
+                            </a>
+                            <a href="{% url 'bookings:booking_delete' booking.pk %}" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        {% endif %}
+                        {% if booking.status == 'completed' and not booking.review_obj %}
+                            <a href="{% url 'bookings:add_review' booking.pk %}" class="btn btn-sm btn-outline-success">
+                                <i class="bi bi-star"></i> Отзыв
+                            </a>
                         {% endif %}
                     </div>
                 </div>
             </div>
         {% endfor %}
     </div>
+
+    {% if is_paginated %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center flex-wrap">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                <li class="page-item disabled">
+                    <span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+                </li>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
 {% else %}
-    <div class="alert alert-info mt-4">
-        <p class="mb-0">У вас пока нет заявок. <a href="{% url 'bookings:booking_form' %}">Создать новую заявку</a></p>
+    <div class="alert alert-info">
+        <i class="bi bi-info-circle"></i> У вас пока нет заявок.
+        <a href="{% url 'bookings:booking_form' %}">Создать новую</a>
     </div>
 {% endif %}
 {% endblock %}

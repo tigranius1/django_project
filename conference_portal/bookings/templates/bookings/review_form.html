@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Отзыв{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-12 col-md-8 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0"><i class="bi bi-star"></i> Отзыв на "{{ booking.room_name }}"</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="id_rating" class="form-label"><i class="bi bi-star-fill"></i> Оценка (1–5)</label>
+                        <input type="number" name="rating" id="id_rating" class="form-control"
+                               min="1" max="5" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_text" class="form-label"><i class="bi bi-chat-quote"></i> Текст отзыва</label>
+                        <textarea name="text" id="id_text" class="form-control" rows="5"
+                                  minlength="10" maxlength="2000" required
+                                  placeholder="Оставьте ваш отзыв..."></textarea>
+                        <div class="form-text">От 10 до 2000 символов</div>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-send"></i> Отправить отзыв
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

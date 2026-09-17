@@ -37,6 +37,12 @@ def login_view(request):
     return render(request, 'users/login.html')
 
 
+def logout_view(request):
+    logout(request)
+    messages.success(request, 'Вы вышли из системы.')
+    return redirect('users:login')
+
+
 @login_required
 def profile_view(request):
     return render(request, 'users/profile.html')
